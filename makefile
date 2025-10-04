@@ -16,12 +16,22 @@ SIMV := $(BUILD_DIR)/simv
 VCD  := $(BUILD_DIR)/wave.vcd
 FST  := $(BUILD_DIR)/wave.fst
 
-.PHONY: all sim run wave fst lint clean realclean help
+# ==== Matlab ====
+OCTAVE	?= octave
+SCRIPT	?= matlab/sliding_window.m
+
+.PHONY: all plot sim run wave fst lint clean realclean help
 
 all: run
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
+
+plot:
+	@mkdir -p build
+	$(OCTAVE) --no-gui --quiet --eval "\
+	  run('$(SCRIPT)');"
+	@echo "wran matlab script"
 
 # Compile
 sim: $(SIMV)
@@ -50,7 +60,7 @@ lint:
 	verilator --lint-only -Wall $(SRC)
 
 clean:
-	@rm -f  $(BUILD_DIR)/simv $(BUILD_DIR)/*.o $(BUILD_DIR)/*.vcd $(BUILD_DIR)/*.fst
+	@rm -f  $(BUILD_DIR)/simv $(BUILD_DIR)/*.o $(BUILD_DIR)/*.vcd $(BUILD_DIR)/*.fst matlab/tb_large_output_matlab.txt matlab/input_data.mem matlab/plot.png *output.txt
 
 realclean: clean
 	@rm -rf $(BUILD_DIR)

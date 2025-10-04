@@ -37,6 +37,10 @@
             # eda.iverilog - fails to build
             eda.verilator
             pkgs.gtkwave
+            pkgs.octaveFull
+            pkgs.gnuplot
+            pkgs.ghostscript
+            pkgs.graphicsmagick
           ];
         };
       }
