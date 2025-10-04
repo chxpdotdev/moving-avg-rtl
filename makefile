@@ -1,8 +1,8 @@
 # ==== Paths ====
 BUILD_DIR := build
 SRC       := $(wildcard src/*.v)
-TB        ?= tb/tb_sliding_window.v
-TOP       ?= tb_sliding_window
+TB        ?= tb/tb_sliding_window_small.v
+TOP       ?= tb_sliding_window_small
 
 # ==== Tools ====
 IVERILOG ?= iverilog
@@ -20,7 +20,7 @@ FST  := $(BUILD_DIR)/wave.fst
 OCTAVE	?= octave
 SCRIPT	?= matlab/sliding_window.m
 
-.PHONY: all plot sim run wave fst lint clean realclean help
+.PHONY: all plot sim run wave lint clean realclean help
 
 all: run
 
@@ -48,12 +48,6 @@ wave: run
 	@test -f $(VCD) || { echo "No $(VCD) generated. Did your TB call $$dumpfile/$$dumpvars?"; exit 1; }
 	$(GTKWAVE) $(VCD)
 
-# Convert to FST if vcd2fst is available
-fst: run
-	@command -v vcd2fst >/dev/null 2>&1 || { echo "vcd2fst not found (part of gtkwave extras)."; exit 1; }
-	vcd2fst $(VCD) $(FST)
-	$(GTKWAVE) $(FST)
-
 # Lint synthesizable RTL with Verilator
 lint:
 	@command -v verilator >/dev/null 2>&1 || { echo "verilator not found"; exit 1; }
@@ -69,7 +63,6 @@ help:
 	@echo "Targets:"
 	@echo "  run      - build and run the simulation"
 	@echo "  wave     - build, run, and open GTKWave on $(VCD)"
-	@echo "  fst      - build, run, convert VCD->FST, open GTKWave"
 	@echo "  lint     - verilator lint on sources in src/"
 	@echo "  clean    - remove build artifacts (keeps build/)"
 	@echo "  realclean- remove build directory"
