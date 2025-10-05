@@ -1,8 +1,8 @@
 # ==== Paths ====
 BUILD_DIR := build
 SRC       := $(wildcard src/*.v)
-TB        ?= tb/tb_sliding_window_small.v
-TOP       ?= tb_sliding_window_small
+TB        ?= tb/tb_sliding_window.v
+TOP       ?= tb_sliding_window
 
 # ==== Tools ====
 IVERILOG ?= iverilog
@@ -54,7 +54,7 @@ lint:
 	verilator --lint-only -Wall $(SRC)
 
 clean:
-	@rm -f  $(BUILD_DIR)/simv $(BUILD_DIR)/*.o $(BUILD_DIR)/*.vcd $(BUILD_DIR)/*.fst matlab/tb_large_output_matlab.txt matlab/input_data.mem matlab/plot.png *output.txt
+	@rm -f  $(BUILD_DIR)/simv $(BUILD_DIR)/*.o $(BUILD_DIR)/*.vcd $(BUILD_DIR)/*.fst matlab/tb_large_output_matlab.txt matlab/input_data.mem matlab/plot.svg *output.txt
 
 realclean: clean
 	@rm -rf $(BUILD_DIR)

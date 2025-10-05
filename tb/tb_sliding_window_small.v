@@ -49,7 +49,7 @@ module tb_sliding_window_small;
 
     integer fh; // output file
 
-     // task to do one sample in one clock
+    // task to do one sample in one clock
     task drive_sample(input signed [WIDTH-1:0] s);
     begin
         @(negedge clk);

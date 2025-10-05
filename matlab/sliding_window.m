@@ -31,18 +31,16 @@ fclose(fid);
 
 % Performs sliding window (moving avg) recursively
 function y = sliding_window(x, L)
+    x = x(:);
+    N = numel(x);
+    y = zeros(N, 1);
+    y(1) = x(1) / L;
 
-x = x(:);
-N = numel(x);
-y = zeros(N, 1);
-y(1) = x(1) / L;
-
-for n = 2 : N
-    x_n_L = 0;
-    if n - L >= 1, x_n_L = x(n - L); end
-    y(n) = y(n - 1) + (x(n) - x_n_L) / L;
-end
-
+    for n = 2 : N
+        x_n_L = 0;
+        if n - L >= 1, x_n_L = x(n - L); end
+        y(n) = y(n - 1) + (x(n) - x_n_L) / L;
+    end
 end
 
 x = double(sample_data(:));
@@ -51,26 +49,26 @@ N = numel(x);
 y = sliding_window(x, WINDOW_LENGTH);
 y_wl_4 = sliding_window(x, WINDOW_LENGTH_4);
 
-x_integer = floor(x);
-y_integer = floor(y); % FLOOR NOT ROUND
+fig = figure('Name','Sliding Window', 'color','none');   % transparent figure
+ax  = axes('Parent', fig, 'color','none', 'Box','off');  % transparent axes
+hold(ax, 'on');
 
-figure('Name','Sliding Window (moving avg)');
-hold on;
+plot(ax, x,          'DisplayName','Sample data');
+plot(ax, y,          'LineStyle','-',  'DisplayName','L = 8');
+plot(ax, y_wl_4,     'LineStyle','--', 'DisplayName','L = 4');
 
-plot(x, 'DisplayName', 'Sample data'); 
-plot(y, 'LineStyle', '-', 'DisplayName', 'L = 8');
-plot(y_wl_4, 'LineStyle','--','DisplayName', 'L = 4');
-
-grid on; 
-legend('Location', 'best');
-xlabel('n'); 
-ylabel('Amplitude');
-title('Original sample data and sliding window (L=8, L=4)');
-print("-dpng", "-r200", "plot.png");
+grid(ax, 'off');                                        % no grid
+legend(ax, 'Location','best', 'Box','off');             % clean legend
+xlabel(ax, 'n'); ylabel(ax, 'Amplitude');
+title(ax, 'Original sample data and sliding window');
+print(fig, "-dsvg", "plot.svg");
 
 
 % ----------- Save as output file ------------ %
 % this is to save as an output file to compare with the verilog output file
+
+x_integer = floor(x);
+y_integer = floor(y); % FLOOR NOT ROUND
 
 fid = fopen(OUTFILE,'w');
 
